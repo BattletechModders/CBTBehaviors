@@ -1,0 +1,11 @@
+{
+  "Heat": {
+    "CriticalHeatPerLocationLight": 0,
+    "CriticalHeatPerLocationMedium": 0,
+    "CriticalHeatPerLocationHeavy": 0,
+    "CriticalHeatPerLocationAssault": 0
+  },
+  "MoveConstants": {
+    "OverheatedMovePenalty": 0
+  }
+}
