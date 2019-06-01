@@ -18,7 +18,7 @@ namespace CBTBehaviors {
         public static readonly Random Random = new Random();
 
         public static void Init(string modDirectory, string settingsJSON) {
-            ModDir = modDirectory;
+            ModDir = modDirectory; 
 
             Exception settingsE = null;
             try {
