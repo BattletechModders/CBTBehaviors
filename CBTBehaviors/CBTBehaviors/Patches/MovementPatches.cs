@@ -28,7 +28,7 @@ namespace CBTBehaviors {
                 Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot) {
                 Mod.Log.Trace("TH:GAM entered");
 
-                if (attacker.HasMovedThisRound && attacker.JumpedLastRound) {
+                if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics != 10) {
                     __result = __result + (float)Mod.Config.ToHitSelfJumped;
                 }
             }
@@ -55,7 +55,7 @@ namespace CBTBehaviors {
                 AbstractActor actor = __instance.DisplayedWeapon.parent;
                 var _this = Traverse.Create(__instance);
 
-                if (actor.HasMovedThisRound && actor.JumpedLastRound) {
+                if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics != 10) {
                     Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
                     Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
                     addToolTipDetailT.GetValue();
