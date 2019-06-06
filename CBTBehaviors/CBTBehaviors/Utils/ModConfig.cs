@@ -17,11 +17,13 @@ namespace CBTBehaviors {
         public float[] ShutdownPercentages = new float[] { 0.083f, 0.278f, 0.583f, 0.833f };
         public float[] AmmoExplosionPercentages = new float[] { 0f, 0.083f, 0.278f, 0.583f };
         public int[] HeatToHitModifiers = new int[] { 1, 2, 3, 4 };
+        public float[] HeatDamagePercentages = new float[] { 0.278f, 0.583f, 0.833f, 1f };
         public bool UseGuts = false;
         public int GutsDivisor = 40;
         public float[] OverheatedMovePenalty = new float[] { 0.1f, 0.2f, 0.3f, 0.4f };
 
         // Piloting
+        public bool usePilotStabilityCheck = false;
         public float PilotStabilityCheck = 0.30f;
 
         // Movement

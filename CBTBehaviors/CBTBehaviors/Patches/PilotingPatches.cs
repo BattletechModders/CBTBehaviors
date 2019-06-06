@@ -35,7 +35,7 @@ namespace CBTBehaviors {
 
                         Mod.Log.Debug($" Skill check -> bonus: {skillBonus}  roll: {skillRoll}  rollTotal: {skillTotal}  target:{Mod.Config.PilotStabilityCheck}");
                         
-                        if (skillTotal < Mod.Config.PilotStabilityCheck) {
+                        if (skillTotal < Mod.Config.PilotStabilityCheck && Mod.Config.usePilotStabilityCheck) {
                             Mod.Log.Debug(string.Format(" Skill Check Failed! Flagging for Knockdown"));
 
                             target.FlagForKnockdown();

@@ -161,7 +161,22 @@ namespace CBTBehaviors {
                 }
             }
         }
+        [HarmonyPatch(typeof(Mech))]
+        [HarmonyPatch("ApplyHeatDamage")]
+        public static class Heat_Damage_Chance
+        {
+            private static void Prefix(Mech __instance, ref float damageAmount)
+            {
+                int turnsOverheated = __instance.StatCollection.GetValue<int>("TurnsOverheated");
+                float heatDamageRoll = __instance.Combat.NetworkRandom.Float();
+                float heatDamagePercentage =  HeatHelper.GetHeatDamagePercentageForTurn(turnsOverheated);
+                var rng = new System.Random();
+                damageAmount = (float)(damageAmount * rng.NextDouble());
 
+                if (heatDamageRoll > heatDamagePercentage)
+                    damageAmount = 0;
+            }
+        }
 
 
     }

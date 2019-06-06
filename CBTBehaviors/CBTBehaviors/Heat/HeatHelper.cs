@@ -1,4 +1,4 @@
-﻿
+﻿using System.Linq;
 using BattleTech;
 
 namespace CBTBehaviors {
@@ -77,6 +77,22 @@ namespace CBTBehaviors {
             }
 
             return false;
+        }
+        public static float GetHeatDamagePercentageForTurn(int turn)
+        {
+            int count = Mod.Config.HeatDamagePercentages.Count();
+
+            if (turn <= 0)
+            {
+                return Mod.Config.HeatDamagePercentages[0];
+            }
+
+            if (turn > count - 1)
+            {
+                turn = count - 1;
+            }
+
+            return Mod.Config.HeatDamagePercentages[turn];
         }
 
     }
