@@ -63,13 +63,13 @@ namespace CBTBehaviors {
             }
         }
 
-        [HarmonyPatch(typeof(AbstractActor), "InitEffectStats")]
-        public static class AbstractActor_InitEffectStats {
-            private static void Postfix(AbstractActor __instance) {
-                Mod.Log.Trace("AA:IES entered");
-                __instance.StatCollection.Set(ModStats.CanShootAfterSpring, true);
-            }
-        }
+        //[HarmonyPatch(typeof(AbstractActor), "InitEffectStats")]
+        //public static class AbstractActor_InitEffectStats {
+        //    private static void Postfix(AbstractActor __instance) {
+        //        Mod.Log.Trace("AA:IES entered");
+        //        __instance.StatCollection.Set(ModStats.CanShootAfterSpring, true);
+        //    }
+        //}
 
         [HarmonyPatch(typeof(AbstractActor), "ResolveAttackSequence", null)]
         public static class AbstractActor_ResolveAttackSequence_Patch {
