@@ -9,18 +9,18 @@ using UnityEngine;
 namespace CBTBehaviors {
 
     public static class MovementPatches {
-        [HarmonyPatch(typeof(EncounterLayerData))]
-        [HarmonyPatch("ContractInitialize")]
-        public static class EncounterLayerData_ContractInitialize {
-            static void Prefix(EncounterLayerData __instance) {
-                Mod.Log.Trace("ELD:CI entered");
-                try {
-                    __instance.turnDirectorBehavior = TurnDirectorBehaviorType.AlwaysInterleaved;
-                } catch (Exception e) {
-                    Mod.Log.Info($"Failed to set behavior to interleaved due to:{e.Message}");
-                }
-            }
-        }
+        //[HarmonyPatch(typeof(EncounterLayerData))]
+        //[HarmonyPatch("ContractInitialize")]
+        //public static class EncounterLayerData_ContractInitialize {
+        //    static void Prefix(EncounterLayerData __instance) {
+        //        Mod.Log.Trace("ELD:CI entered");
+        //        try {
+        //            __instance.turnDirectorBehavior = TurnDirectorBehaviorType.AlwaysInterleaved;
+        //        } catch (Exception e) {
+        //            Mod.Log.Info($"Failed to set behavior to interleaved due to:{e.Message}");
+        //        }
+        //    }
+        //}
 
         [HarmonyPatch(typeof(ToHit), "GetAllModifiers")]
         public static class ToHit_GetAllModifiers {
