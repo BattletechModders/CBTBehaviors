@@ -23,6 +23,7 @@ namespace CBTBehaviors {
 
         // Piloting
         public float PilotStabilityCheck = 0.30f;
+        public bool ShowAllStabilityRolls = false;
 
         // Movement
         public int ToHitSelfJumped = 2;
