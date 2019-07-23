@@ -19,6 +19,9 @@ namespace CBTBehaviors {
         {
             public static void Postfix(Mech __instance)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
+
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     Mod.Log.Trace("M:I entered.");
@@ -31,6 +34,8 @@ namespace CBTBehaviors {
         public static class Mech_OnActivationEnd {
             private static void Prefix(Mech __instance, string sourceID, int stackItemID)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     if (__instance.IsOverheated)
@@ -121,6 +126,8 @@ namespace CBTBehaviors {
         {
             public static void Postfix(Mech __instance, ref float __result)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     Mod.Log.Trace("M:MM:GET entered.");
@@ -140,6 +147,8 @@ namespace CBTBehaviors {
         public static class ToHit_GetHeatModifier {
             public static void Postfix(ToHit __instance, ref float __result, AbstractActor attacker)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     Mod.Log.Trace("TH:GHM entered.");
@@ -166,6 +175,8 @@ namespace CBTBehaviors {
         public static class CombatHUDStatusPanel_ShowShutDownIndicator {
             public static bool Prefix(CombatHUDStatusPanel __instance)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return true;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     Mod.Log.Trace("CHUBSP:SSDI:PRE entered.");
@@ -176,6 +187,8 @@ namespace CBTBehaviors {
 
             public static void Postfix(CombatHUDStatusPanel __instance, Mech mech)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     Mod.Log.Trace("CHUBSP:SSDI:POST entered.");
@@ -213,6 +226,8 @@ namespace CBTBehaviors {
         {
             private static void Prefix(Mech __instance, ref float damageAmount)
             {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
                 if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
                 {
                     int turnsOverheated = __instance.StatCollection.GetValue<int>("TurnsOverheated");

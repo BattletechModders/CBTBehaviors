@@ -25,11 +25,18 @@ namespace CBTBehaviors {
         [HarmonyPatch(typeof(ToHit), "GetAllModifiers")]
         public static class ToHit_GetAllModifiers {
             private static void Postfix(ToHit __instance, ref float __result, AbstractActor attacker, Weapon weapon, ICombatant target,
-                Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot) {
-                Mod.Log.Trace("TH:GAM entered");
+                Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot)
+            {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
+                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                {
+                    Mod.Log.Trace("TH:GAM entered");
 
-                if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics != 10) {
-                    __result = __result + (float)Mod.Config.ToHitSelfJumped;
+                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics != 10)
+                    {
+                        __result = __result + (float)Mod.Config.ToHitSelfJumped;
+                    }
                 }
             }
         }
@@ -37,11 +44,18 @@ namespace CBTBehaviors {
         [HarmonyPatch(typeof(ToHit), "GetAllModifiersDescription")]
         public static class ToHit_GetAllModifiersDescription {
             private static void Postfix(ToHit __instance, ref string __result, AbstractActor attacker, Weapon weapon, ICombatant target,
-                Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot) {
-                Mod.Log.Trace("TH:GAMD entered");
+                Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot)
+            {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
+                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                {
+                    Mod.Log.Trace("TH:GAMD entered");
 
-                if (attacker.HasMovedThisRound && attacker.JumpedLastRound) {
-                    __result = string.Format("{0}JUMPED {1:+#;-#}; ", __result, Mod.Config.ToHitSelfJumped);
+                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound)
+                    {
+                        __result = string.Format("{0}JUMPED {1:+#;-#}; ", __result, Mod.Config.ToHitSelfJumped);
+                    }
                 }
             }
         }
@@ -49,16 +63,23 @@ namespace CBTBehaviors {
         [HarmonyPatch(typeof(CombatHUDWeaponSlot), "SetHitChance", new Type[] { typeof(ICombatant) })]
         public static class CombatHUDWeaponSlot_SetHitChance {
 
-            private static void Postfix(CombatHUDWeaponSlot __instance, ICombatant target) {
-                Mod.Log.Trace("CHUDWS:SHC entered");
+            private static void Postfix(CombatHUDWeaponSlot __instance, ICombatant target)
+            {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
+                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                {
+                    Mod.Log.Trace("CHUDWS:SHC entered");
 
-                AbstractActor actor = __instance.DisplayedWeapon.parent;
-                var _this = Traverse.Create(__instance);
+                    AbstractActor actor = __instance.DisplayedWeapon.parent;
+                    var _this = Traverse.Create(__instance);
 
-                if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics != 10) {
-                    Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
-                    Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
-                    addToolTipDetailT.GetValue();
+                    if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics != 10)
+                    {
+                        Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
+                        Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
+                        addToolTipDetailT.GetValue();
+                    }
                 }
             }
         }
@@ -74,13 +95,26 @@ namespace CBTBehaviors {
         [HarmonyPatch(typeof(AbstractActor), "ResolveAttackSequence", null)]
         public static class AbstractActor_ResolveAttackSequence_Patch {
             
-            private static bool Prefix(AbstractActor __instance) {
-                Mod.Log.Trace("AA:RAS:PRE entered");
-                return false;
+            private static bool Prefix(AbstractActor __instance)
+            {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return true;
+                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                {
+                    Mod.Log.Trace("AA:RAS:PRE entered");
+                    return false;
+                }
+                else
+                    return true;
             }
 
-            private static void Postfix(AbstractActor __instance, string sourceID, int sequenceID, int stackItemID, AttackDirection attackDirection) {
-                Mod.Log.Trace("AA:RAS:POST entered");
+            private static void Postfix(AbstractActor __instance, string sourceID, int sequenceID, int stackItemID, AttackDirection attackDirection)
+            {
+                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                    return;
+                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                {
+                    Mod.Log.Trace("AA:RAS:POST entered");
 
                 //int evasivePipsCurrent = __instance.EvasivePipsCurrent;
                 //__instance.ConsumeEvasivePip(true);
@@ -98,11 +132,15 @@ namespace CBTBehaviors {
                     for (int i = 0; i < list.Count; i++) {
                         list[i].OnEffectTakeDamage(attackSequence.attacker, __instance);
                     }
-                    if (attackSequence.isMelee) {
-                        int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
-                        if (value > 0) {
-                            for (int j = 0; j < value; j++) {
-                                __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
+                        if (attackSequence.isMelee)
+                        {
+                            int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
+                            if (value > 0)
+                            {
+                                for (int j = 0; j < value; j++)
+                                {
+                                    __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
+                                }
                             }
                         }
                     }
