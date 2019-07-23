@@ -32,17 +32,11 @@ namespace CBTBehaviors {
 
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
-            Log.Info($"Assembly version: {fvi.ProductVersion}");
 
             Log.Debug($"ModDir is:{modDirectory}");
             Log.Debug($"mod.json settings are:({settingsJSON})");
-            Mod.Config.LogConfig();
+            //Mod.Config.LogConfig();
 
-            if (settingsE != null) {
-                Log.Info($"ERROR reading settings file! Error was: {settingsE}");
-            } else {
-                Log.Info($"INFO: No errors reading settings file.");
-            }
 
             var harmony = HarmonyInstance.Create(HarmonyPackage);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
