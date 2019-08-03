@@ -3,7 +3,7 @@
 namespace CBTBehaviors {
     
     public class ModStats {
-        public const string TurnsOverheated = "CBTB_TurnsOverheated";
+        public const string TurnsOverheated = "TurnsOverheated";
         public const string CanShootAfterSpring = "CanShootAfterSprinting";
         public const string MeleeHitPushBackPhases = "MeleeHitPushBackPhases";
     }
