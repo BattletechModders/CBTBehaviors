@@ -37,13 +37,19 @@ namespace CBTBehaviors {
                         
                         if (skillTotal < Mod.Config.PilotStabilityCheck) {
                             Mod.Log.Debug(string.Format(" Skill Check Failed! Flagging for Knockdown"));
+                            bool showMessage = !target.IsFlaggedForKnockdown;
 
                             target.FlagForKnockdown();
-                            target.Combat.MessageCenter.PublishMessage(new AddSequenceToStackMessage(new ShowActorInfoSequence(target, $"Stability Check: Failed!", FloatieMessage.MessageNature.Debuff, true)));
+                            if (Mod.Config.ShowAllStabilityRolls || showMessage)
+                            {
+                                target.Combat.MessageCenter.PublishMessage(new AddSequenceToStackMessage(new ShowActorInfoSequence(target, $"Stability Check: Failed!", FloatieMessage.MessageNature.Debuff, true)));
+                            }
                         } else {
                             Mod.Log.Debug(string.Format(" Skill Check Succeeded!"));
-
-                            target.Combat.MessageCenter.PublishMessage(new AddSequenceToStackMessage(new ShowActorInfoSequence(target, $"Stability Check: Passed!", FloatieMessage.MessageNature.Buff, true)));
+                            if (Mod.Config.ShowAllStabilityRolls)
+                            {
+                                target.Combat.MessageCenter.PublishMessage(new AddSequenceToStackMessage(new ShowActorInfoSequence(target, $"Stability Check: Passed!", FloatieMessage.MessageNature.Buff, true)));
+                            }
                         }
                     } else {
                         Mod.Log.Debug($"  target has no stability damage, is not unsteady, or is dead or prone - skipping");
