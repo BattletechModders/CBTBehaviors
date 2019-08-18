@@ -49,7 +49,7 @@ namespace CBTBehaviors {
                                 target.FlagForKnockdown();
                                 target.Combat.MessageCenter.PublishMessage(new AddSequenceToStackMessage(new ShowActorInfoSequence(target, $"Stability Check: Failed!", FloatieMessage.MessageNature.Debuff, true)));
                             }
-                            else
+                            else if (Mod.Config.usePilotStabilityCheck)
                             {
                                 Mod.Log.Debug(string.Format(" Skill Check Succeeded!"));
 
