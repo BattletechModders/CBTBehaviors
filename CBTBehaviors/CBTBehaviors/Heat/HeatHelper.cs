@@ -19,6 +19,7 @@ namespace CBTBehaviors {
             return Mod.Config.ShutdownPercentages[turn];
         }
 
+
         public static float GetAmmoExplosionPercentageForTurn(int turn) {
             int count = Mod.Config.AmmoExplosionPercentages.Length;
 
