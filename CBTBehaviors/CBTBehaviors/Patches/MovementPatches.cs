@@ -272,8 +272,8 @@ namespace CBTBehaviors {
 
                 if (!__instance.IsInterleavePending && !__instance.IsInterleaved && numUnusedUnitsForCurrentPhase > 0) {
                     Mod.Log.Info("Sending TurnActorActivateMessage");
-                    Traverse staamT = Traverse.Create(__instance).Method("SendTurnActorActivateMessage");
-                    staamT.GetValue(new object[] { __instance.ActiveTurnActorIndex });
+                    Traverse staamT = Traverse.Create(__instance).Method("SendTurnActorActivateMessage", new object[] { __instance.ActiveTurnActorIndex });
+                    staamT.GetValue();
                 } else {
                     Mod.Log.Info("Incrementing ActiveTurnActor");
                     Traverse iataT = Traverse.Create(__instance).Method("IncrementActiveTurnActor");

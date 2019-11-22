@@ -79,6 +79,35 @@ namespace CBTBehaviors {
             return false;
         }
 
+        public static float GetPilotShutdownMod(AbstractActor actor) {
+            float shutdownMod = 0f;
+            if (actor != null && actor.GetPilot() != null) {
+                int actorSkill = NormalizeSkill(actor.GetPilot().Piloting);
+                shutdownMod = actorSkill * Mod.Config.Heat.PilotSkillShutdownMulti;
+                Mod.Log.Debug($"Actor: {actor.DisplayName}_{actor.GetPilot().Name} has normalizedSkill: {actorSkill} with shutdownMod: {shutdownMod}");
+            } else {
+                Mod.Log.Info($"WARNING: Actor {actor.DisplayName} has no pilot!");
+            }
+            return shutdownMod;
+        }
+
+        // Reduce RT elite pilots with skills > 10 to 11-13 to reduce their skill impact on specific checks
+        private static int NormalizeSkill(int rawValue) {
+            int normalizedVal = rawValue;
+            if (rawValue >= 11 && rawValue <= 14) {
+                normalizedVal = 11;
+            } else if (rawValue >= 15 && rawValue <= 18) {
+                normalizedVal = 12;
+            } else if (rawValue == 19 || rawValue == 20) {
+                normalizedVal = 13;
+            } else if (rawValue <= 0) {
+                normalizedVal = 1;
+            } else if (rawValue > 20) {
+                normalizedVal = 13;
+            }
+            return normalizedVal;
+        }
+
     }
 
     public class CBTPilotingRules {
@@ -96,4 +125,6 @@ namespace CBTBehaviors {
             return num / gutsDivisor;
         }
     }
+
+
 }
