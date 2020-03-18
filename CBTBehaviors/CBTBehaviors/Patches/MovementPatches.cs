@@ -29,11 +29,10 @@ namespace CBTBehaviors {
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
-                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
-                {
+
                     Mod.Log.Trace("TH:GAM entered");
 
-                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics != 10)
+                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
                     {
                         __result = __result + (float)Mod.Config.ToHitSelfJumped;
                     }
@@ -48,11 +47,11 @@ namespace CBTBehaviors {
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
-                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+
                 {
                     Mod.Log.Trace("TH:GAMD entered");
 
-                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound)
+                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
                     {
                         __result = string.Format("{0}JUMPED {1:+#;-#}; ", __result, Mod.Config.ToHitSelfJumped);
                     }
@@ -74,7 +73,7 @@ namespace CBTBehaviors {
                     AbstractActor actor = __instance.DisplayedWeapon.parent;
                     var _this = Traverse.Create(__instance);
 
-                    if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics != 10)
+                    if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics < Mod.Config.TacticsSkillNegateJump)
                     {
                         Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
                         Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
@@ -95,26 +94,21 @@ namespace CBTBehaviors {
         [HarmonyPatch(typeof(AbstractActor), "ResolveAttackSequence", null)]
         public static class AbstractActor_ResolveAttackSequence_Patch {
             
-            private static bool Prefix(AbstractActor __instance)
+            public static bool Prefix(AbstractActor __instance)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return true;
-                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
-                {
-                    Mod.Log.Trace("AA:RAS:PRE entered");
-                    return false;
-                }
-                else
-                    return true;
+                
+                Mod.Log.Trace("AA:RAS:PRE entered");
+                return false;
             }
 
-            private static void Postfix(AbstractActor __instance, string sourceID, int sequenceID, int stackItemID, AttackDirection attackDirection)
+            public static void Postfix(AbstractActor __instance, string sourceID, int sequenceID, int stackItemID, AttackDirection attackDirection)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
-                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
-                {
-                    Mod.Log.Trace("AA:RAS:POST entered");
+
+                Mod.Log.Trace("AA:RAS:POST entered");
 
                 //int evasivePipsCurrent = __instance.EvasivePipsCurrent;
                 //__instance.ConsumeEvasivePip(true);
@@ -128,26 +122,24 @@ namespace CBTBehaviors {
                     if (!attackSequence.GetAttackDidDamage(__instance.GUID)) {
                         return;
                     }
-                    List<Effect> list = __instance.Combat.EffectManager.GetAllEffectsTargeting(__instance).FindAll((Effect x) => x.EffectData.targetingData.effectTriggerType == EffectTriggerType.OnDamaged);
-                    for (int i = 0; i < list.Count; i++) {
-                        list[i].OnEffectTakeDamage(attackSequence.attacker, __instance);
-                    }
-                        if (attackSequence.isMelee)
+
+                List<Effect> list = __instance.Combat.EffectManager.GetAllEffectsTargeting(__instance).FindAll((Effect x) => 
+                x.EffectData.targetingData.effectTriggerType == EffectTriggerType.OnDamaged);
+                for (int i = 0; i < list.Count; i++) {
+                    list[i].OnEffectTakeDamage(attackSequence.attacker, __instance);
+                }
+                if (attackSequence.isMelee)
+                {
+                    int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
+                    if (value > 0)
+                    {
+                        for (int j = 0; j < value; j++)
                         {
-                            int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
-                            if (value > 0)
-                            {
-                                for (int j = 0; j < value; j++)
-                                {
-                                    __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
-                                }
-                            }
+                            __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
                         }
                     }
                 }
-
             }
-
         }
     }
 }

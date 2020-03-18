@@ -28,6 +28,7 @@ namespace CBTBehaviors {
 
         // Movement
         public int ToHitSelfJumped = 2;
+        public int TacticsSkillNegateJump = 10;
 
         public void LogConfig() {
             Mod.Log.Info("=== MOD CONFIG BEGIN ===");
