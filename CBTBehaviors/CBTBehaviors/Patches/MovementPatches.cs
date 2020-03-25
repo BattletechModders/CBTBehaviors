@@ -66,19 +66,16 @@ namespace CBTBehaviors {
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
-                if (UnityGameInstance.BattleTechGame.Simulation.Constants.Story.MaximumDebt == 42)
+                Mod.Log.Trace("CHUDWS:SHC entered");
+
+                AbstractActor actor = __instance.DisplayedWeapon.parent;
+                var _this = Traverse.Create(__instance);
+
+                if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics < Mod.Config.TacticsSkillNegateJump)
                 {
-                    Mod.Log.Trace("CHUDWS:SHC entered");
-
-                    AbstractActor actor = __instance.DisplayedWeapon.parent;
-                    var _this = Traverse.Create(__instance);
-
-                    if (actor.HasMovedThisRound && actor.JumpedLastRound && actor.SkillTactics < Mod.Config.TacticsSkillNegateJump)
-                    {
-                        Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
-                        Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
-                        addToolTipDetailT.GetValue();
-                    }
+                    Traverse addToolTipDetailT = Traverse.Create(__instance).Method("AddToolTipDetail", "JUMPED SELF", Mod.Config.ToHitSelfJumped);
+                    Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
+                    addToolTipDetailT.GetValue();
                 }
             }
         }
