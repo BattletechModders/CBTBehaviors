@@ -8,7 +8,8 @@ using UnityEngine;
 
 namespace CBTBehaviors {
 
-    public static class MovementPatches {
+    public static class MovementPatches
+    {
         //[HarmonyPatch(typeof(EncounterLayerData))]
         //[HarmonyPatch("ContractInitialize")]
         //public static class EncounterLayerData_ContractInitialize {
@@ -23,49 +24,45 @@ namespace CBTBehaviors {
         //}
 
         [HarmonyPatch(typeof(ToHit), "GetAllModifiers")]
-        public static class ToHit_GetAllModifiers {
+        public static class ToHit_GetAllModifiers
+        {
             private static void Postfix(ToHit __instance, ref float __result, AbstractActor attacker, Weapon weapon, ICombatant target,
                 Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
 
-                    Mod.Log.Trace("TH:GAM entered");
+                Mod.Log.Trace("TH:GAM entered");
 
-                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
-                    {
-                        __result = __result + (float)Mod.Config.ToHitSelfJumped;
-                    }
-                }
+                if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
+                    __result = __result + (float)Mod.Config.ToHitSelfJumped;
             }
         }
 
         [HarmonyPatch(typeof(ToHit), "GetAllModifiersDescription")]
-        public static class ToHit_GetAllModifiersDescription {
+        public static class ToHit_GetAllModifiersDescription
+        {
             private static void Postfix(ToHit __instance, ref string __result, AbstractActor attacker, Weapon weapon, ICombatant target,
                 Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
 
-                {
-                    Mod.Log.Trace("TH:GAMD entered");
+                Mod.Log.Trace("TH:GAMD entered");
 
-                    if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
-                    {
-                        __result = string.Format("{0}JUMPED {1:+#;-#}; ", __result, Mod.Config.ToHitSelfJumped);
-                    }
-                }
+                if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
+                    __result = string.Format("{0}JUMPED {1:+#;-#}; ", __result, Mod.Config.ToHitSelfJumped);
             }
         }
 
         [HarmonyPatch(typeof(CombatHUDWeaponSlot), "SetHitChance", new Type[] { typeof(ICombatant) })]
-        public static class CombatHUDWeaponSlot_SetHitChance {
-
+        public static class CombatHUDWeaponSlot_SetHitChance
+        {
             private static void Postfix(CombatHUDWeaponSlot __instance, ICombatant target)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
                     return;
+
                 Mod.Log.Trace("CHUDWS:SHC entered");
 
                 AbstractActor actor = __instance.DisplayedWeapon.parent;
@@ -89,8 +86,8 @@ namespace CBTBehaviors {
         //}
 
         [HarmonyPatch(typeof(AbstractActor), "ResolveAttackSequence", null)]
-        public static class AbstractActor_ResolveAttackSequence_Patch {
-            
+        public static class AbstractActor_ResolveAttackSequence_Patch
+        {
             public static bool Prefix(AbstractActor __instance)
             {
                 if (UnityGameInstance.BattleTechGame.Simulation == null)
@@ -107,32 +104,35 @@ namespace CBTBehaviors {
 
                 Mod.Log.Trace("AA:RAS:POST entered");
 
-                //int evasivePipsCurrent = __instance.EvasivePipsCurrent;
-                //__instance.ConsumeEvasivePip(true);
-                //int evasivePipsCurrent2 = __instance.EvasivePipsCurrent;
-                //if (evasivePipsCurrent2 < evasivePipsCurrent && !__instance.IsDead && !__instance.IsFlaggedForDeath) {
-                //    __instance.Combat.MessageCenter.PublishMessage(new FloatieMessage(__instance.GUID, __instance.GUID, "-1 EVASION", FloatieMessage.MessageNature.Debuff));
-                //}
-
-                AttackDirector.AttackSequence attackSequence = __instance.Combat.AttackDirector.GetAttackSequence(sequenceID);
-                if (attackSequence != null) {
-                    if (!attackSequence.GetAttackDidDamage(__instance.GUID)) {
-                        return;
-                    }
-
-                List<Effect> list = __instance.Combat.EffectManager.GetAllEffectsTargeting(__instance).FindAll((Effect x) => 
-                x.EffectData.targetingData.effectTriggerType == EffectTriggerType.OnDamaged);
-                for (int i = 0; i < list.Count; i++) {
-                    list[i].OnEffectTakeDamage(attackSequence.attacker, __instance);
-                }
-                if (attackSequence.isMelee)
+                if (!Mod.Config.UsingSemiPermanentEvasion)
                 {
-                    int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
-                    if (value > 0)
+                    int evasivePipsCurrent = __instance.EvasivePipsCurrent;
+                    __instance.ConsumeEvasivePip(true);
+                    int evasivePipsCurrent2 = __instance.EvasivePipsCurrent;
+                    if (evasivePipsCurrent2 < evasivePipsCurrent && !__instance.IsDead && !__instance.IsFlaggedForDeath)
+                        __instance.Combat.MessageCenter.PublishMessage(new FloatieMessage(__instance.GUID, __instance.GUID,
+                            "-1 EVASION", FloatieMessage.MessageNature.Debuff));
+
+                    AttackDirector.AttackSequence attackSequence = __instance.Combat.AttackDirector.GetAttackSequence(sequenceID);
+                    if (attackSequence != null)
                     {
-                        for (int j = 0; j < value; j++)
+                        if (!attackSequence.GetAttackDidDamage(__instance.GUID))
+                            return;
+
+                        List<Effect> list = __instance.Combat.EffectManager.GetAllEffectsTargeting(__instance).FindAll((Effect x) =>
+                        x.EffectData.targetingData.effectTriggerType == EffectTriggerType.OnDamaged);
+
+                        for (int i = 0; i < list.Count; i++)
+                            list[i].OnEffectTakeDamage(attackSequence.attacker, __instance);
+
+                        if (attackSequence.isMelee)
                         {
-                            __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
+                            int value = attackSequence.attacker.StatCollection.GetValue<int>(ModStats.MeleeHitPushBackPhases);
+                            if (value > 0)
+                            {
+                                for (int j = 0; j < value; j++)
+                                    __instance.ForceUnitOnePhaseDown(sourceID, stackItemID, false);
+                            }
                         }
                     }
                 }
