@@ -29,13 +29,19 @@ namespace CBTBehaviors {
             private static void Postfix(ToHit __instance, ref float __result, AbstractActor attacker, Weapon weapon, ICombatant target,
                 Vector3 attackPosition, Vector3 targetPosition, LineOfFireLevel lofLevel, bool isCalledShot)
             {
-                if (UnityGameInstance.BattleTechGame.Simulation == null)
+                if (UnityGameInstance.BattleTechGame.Simulation == null || weapon == null)
                     return;
 
                 Mod.Log.Trace("TH:GAM entered");
 
-                if (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
-                    __result = __result + (float)Mod.Config.ToHitSelfJumped;
+                if (
+                (attacker.HasMovedThisRound && attacker.JumpedLastRound && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump) ||
+                (ModState.CombatHUD?.SelectionHandler?.ActiveState != null &&
+                ModState.CombatHUD?.SelectionHandler?.ActiveState is SelectionStateJump && attacker.SkillTactics < Mod.Config.TacticsSkillNegateJump)
+                )
+                {
+                    __result += (float)Mod.Config.ToHitSelfJumped;
+                }
             }
         }
 
@@ -74,6 +80,18 @@ namespace CBTBehaviors {
                     Mod.Log.Debug($"Invoking addToolTipDetail for: JUMPED SELF = {Mod.Config.ToHitSelfJumped}");
                     addToolTipDetailT.GetValue();
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(SelectionStateJump), "CreateMoveOrders")]
+        static class SelectionStateJump_CreateMoveOrders
+        {
+            static void Postfix(SelectionStateJump __instance)
+            {
+                Mod.Log.Trace("SSJ:CMO - entered.");
+
+                Mod.Log.Info("REFRESHING WEAPON PANEL FOR JUMP PREVIEW.");
+                ModState.CombatHUD.WeaponPanel.RefreshDisplayedWeapons(true, false);
             }
         }
 
