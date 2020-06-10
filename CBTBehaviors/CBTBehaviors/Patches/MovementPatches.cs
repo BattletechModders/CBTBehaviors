@@ -83,18 +83,6 @@ namespace CBTBehaviors {
             }
         }
 
-        [HarmonyPatch(typeof(SelectionStateJump), "CreateMoveOrders")]
-        static class SelectionStateJump_CreateMoveOrders
-        {
-            static void Postfix(SelectionStateJump __instance)
-            {
-                Mod.Log.Trace("SSJ:CMO - entered.");
-
-                Mod.Log.Info("REFRESHING WEAPON PANEL FOR JUMP PREVIEW.");
-                ModState.CombatHUD.WeaponPanel.RefreshDisplayedWeapons(true, false);
-            }
-        }
-
         //[HarmonyPatch(typeof(AbstractActor), "InitEffectStats")]
         //public static class AbstractActor_InitEffectStats {
         //    private static void Postfix(AbstractActor __instance) {
